@@ -7,41 +7,44 @@ import { getBio, getRepos} from '../services/http.js'
 import { getbioView,clearLoader  } from '../view/bioView.js';
 import { getRepoView,  renderRepo} from '../view/repoView';
 import { profileImage,avatarImage  } from '../view/avatarView';
+import  model  from '../view/base'
+import observerHandler  from '../util/observe'
 
 
-document.getElementById('logo').src = logo;
- document.getElementById('logo-full').src = logo;
+console.log('dom',model.getElemById('logo'))
 
-  
- const state = {
-     
- }
-
+model.getElemById('logo').src = logo
+model.getElemById('logo-full').src = logo
+// document.getElementById('logo').src = logo;
+//  document.getElementById('logo-full').src = logo;
 
  
 
- document.querySelector(".icon").addEventListener('click',toggleSideBar)
- function toggleSideBar(e) {
+document.querySelector(".icon").addEventListener('click',toggleNavBar)
+ 
+function toggleNavBar(e) {
     e.preventDefault();
-    const asideNode = document.querySelector(".header__item--nav-box");
-    const header = document.querySelector(".header");
-    if (asideNode.classList.contains("open") || header.classList.contains("open") ) {
-      asideNode.classList.remove("open");
+    
+    const navBarElem = model.getElemByClass('header__item--nav-box')
+    const header = model.getElemByClass('header');
+    if (navBarElem.classList.contains("open") || header.classList.contains("open") ) {
+      navBarElem.classList.remove("open");
       header.classList.remove("open");
     } else {
-      asideNode.classList.add("open");
+      navBarElem.classList.add("open");
       header.classList.add("open");
     }
   }
  
 
 document.addEventListener("DOMContentLoaded",  async () => {
-  document.querySelector('.sticky-detail-loader').src  = loader;
-  document.querySelector('.repo-loader').src  = loader;
-    const {data} = await getBio('solomonfrank');
-    const {data: repoData} = await getRepos('solomonfrank');
-   const firstList = repoData.slice(0, 20);
-   const transformRepo = firstList.map(x => {
+  model.getElemByClass('sticky-detail-loader').src  = loader;
+  model.getElemByClass('repo-loader').src  = loader;
+
+  const {data} = await getBio('solomonfrank');
+  const {data: repoData} = await getRepos('solomonfrank');
+  const firstList = repoData.slice(0, 20);
+  const transformRepo = firstList.map(x => {
        return {
         stargazerUrl: x.stargazers_url,
         stargazersCount:x.stargazers_count,
@@ -55,22 +58,18 @@ document.addEventListener("DOMContentLoaded",  async () => {
        }
    }).sort((a, b) => b.updatedAt - a.updatedAt)
 
-  
-
-  
-   const bioView = getbioView(data);
-   
-    const parentNode = document.querySelector('.sticky-detail');
+  const bioView = getbioView(data);
+  const repoListContainer =  model.getElemByClass("sticky-detail");
  
-   parentNode.innerHTML = bioView;
-   clearLoader()
-   document.querySelector(".user-profile-sticky").innerHTML = profileImage(data)
-    document.querySelector(".header-avatar").innerHTML = `${avatarImage(data)}
+  repoListContainer.innerHTML = bioView;
+  clearLoader()
+  model.getElemByClass("user-profile-sticky").innerHTML = profileImage(data)
+  model.getElemByClass("header-avatar").innerHTML = `${avatarImage(data)}
    
     <span class="caret">${data.login}</span>
     
     `
-   document.querySelector(".user").innerHTML = `${avatarImage(data)}
+    model.getElemByClass("user").innerHTML = `${avatarImage(data)}
    
    <i class="fa fa-caret-down" aria-hidden="true"></i>
    
@@ -78,9 +77,10 @@ document.addEventListener("DOMContentLoaded",  async () => {
    
    renderRepo(transformRepo)
    clearLoader() 
-   var displayRepoCount = document.querySelector(".found-result");
-   var displayTotalRepoCount = document.querySelector(".repo-total-count");
-   var displayTotalRepoCounts = document.querySelector(".repo-total-counts");
+
+   const displayRepoCount = model.getElemByClass("found-result");
+   const displayTotalRepoCount = model.getElemByClass("repo-total-count");
+   const displayTotalRepoCounts = model.getElemByClass("repo-total-counts");
 
    displayRepoCount.innerHTML = `${transformRepo.length} results for the public repositories
    `;
@@ -88,56 +88,15 @@ document.addEventListener("DOMContentLoaded",  async () => {
    displayTotalRepoCounts.innerHTML = `${repoData.length}`
 
 
-    var header= document.querySelector(".header");
-
-    
-
-var userImage = document.getElementById("user-logo");
-
- var stickyProdileNav = document.querySelector(".user-profile-sticky");
-
-var stickyNav = document.querySelector(".sticky-position-nav");
-var navbarSec = document.querySelector(".nav-wrap")
-
-let headerObserver = new IntersectionObserver(function(entries,headerObserver){
-
-     entries.forEach(entry => {
-       
-        if(entry.target.id == "user-logo") {
-         
-         if(!entry.isIntersecting) {
-            
-             stickyProdileNav.classList.add("user-profile-sticky-bar")
-            
-            }else {
-            
-             stickyProdileNav.classList.remove("user-profile-sticky-bar")
-            }
-        }else {
-            
-         if(!entry.isIntersecting) {
-          
-
-           
-           
-             stickyNav.classList.add("stcky-container-nav")
-             stickyNav.classList.add("sticky-position-nav-sm")
-             navbarSec.classList.add("d-hide")
-            
-            
-            }else {
-             stickyNav.classList.remove("stcky-container-nav")
-             stickyNav.classList.remove("sticky-position-nav-sm")
-             navbarSec.classList.remove("d-hide")
-             
-            }
-        }
-    
-     })
- }, {});
+ const header = model.getElemByClass("header");
+ const userImage = model.getElemById("user-logo");
  
- headerObserver.observe(header)
- headerObserver.observe(userImage)
+let headerObserver = new IntersectionObserver(observerHandler, {});
+
+headerObserver.observe(header)
+headerObserver.observe(userImage)
+
+
   
   
   })

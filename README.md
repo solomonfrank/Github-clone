@@ -9,6 +9,9 @@ A replica of github profile page using vanilla javacript, pure css and html and 
 - Clone the repo
 - Run npm install
 - Run npm start to run the project.
+- Live link https://github-clone-example.netlify.app/
+
+[live](https://github-clone-example.netlify.app/)
 
 ## Project top-level directory structure
 

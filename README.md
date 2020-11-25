@@ -15,8 +15,8 @@ A replica of github profile page using vanilla javacript, pure css and html and 
 ```
 dist
    ├── js
-        ├── bundle.css          Webpack bundle file
-   ├── index.html
+        ├── bundle.css         # Webpack bundle file
+   ├── index.html           # finally html with injected bundle js file
 src
     ├── css
     │   ├── style.css          #  css style file
